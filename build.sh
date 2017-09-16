@@ -14,12 +14,17 @@ function clean
 function install_test
 {
   export wd=`pwd`
-  echo "auth required ${wd}/pamtls.so logger=syslog test" > /etc/pam.d/test_pamtls
+  echo "auth required ${wd}/pamtls.so logger=syslog debug=true" > /etc/pam.d/test_pamtls
 }
 
 function uninstall_test
 {
   rm -f /etc/pam.d/test_pamtls
+}
+
+function test
+{
+  pamtester test_pamtls test authenticate
 }
 
 case $1 in
@@ -39,6 +44,9 @@ case $1 in
     ;;
   "uninstall_test")
     uninstall_test
+    ;;
+  "test")
+    test
     ;;
 
   *)
