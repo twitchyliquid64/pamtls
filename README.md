@@ -59,7 +59,7 @@ pamtls will make a request to `url`/authenticate. (eg: if you have `url=https://
 
 The request will contain JSON like this:
 ```json
-"{"user":"<username>","token":"<token>","responses":[["<password>"]]}"
+{"user":"<username>","token":"<token>","responses":[["<password>"]]}
 ```
 
 You should reply like this:
