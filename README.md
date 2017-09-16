@@ -36,7 +36,7 @@ export GOPATH=`pwd` #set the GOPATH to the root directory of pamtls
 | token         | This is a string which will be sent to the web endpoint for all requests on this machine. Useful for giving a machine a unique identifier. | `token=blah-blah` |
 | url           | Base URL which pamtls will make requests to, to ask if the user should be permitted. | `url=https://<mydomain>/auth` |
 | verify        | Sets the TLS verification mode. Defaults to full verification against System root certificates. Other values are 'pinned' and 'insecure'. Do not get lazy and use insecure, you might as well just not have a password then. | `verify=pinned` |
-| root          | Only valid when `verify=pinned`. This should be the full path to a PEM-encoded certificate. The TLS cert presented by the server must be signed by this cert. | `root=/etc/ca.pem` |
+| root          | Only valid when `verify=pinned`. This should be the full path to a PEM-encoded certificate. The TLS cert presented by the server must be signed by this cert, and must not be expired. | `root=/etc/ca.pem` |
 | cert          | Only valid when `key` is set as well. This is a path to the PEM-encoded client certificate to use for TLS connections. | `cert=/etc/client_cert.pem` |
 | key           | Only valid when `cert`is set as well. This is a path to the PEM-encoded client key to use for TLS connections. | `cert=/etc/client_key.pem` |
 | prompt        | When present and set to `password`, pamtls will not ask the server which questions the user should be asked, and instead just ask for the password. You probably want to set this, unless you are doing funky stuff and want to prompt the user for other credentials as well (such as an OTP/2-factor code). | `prompt=password` |
@@ -59,7 +59,8 @@ pamtls will make a request to `url`/authenticate. (eg: if you have `url=https://
 
 The request will contain JSON like this:
 ```json
-"{"user":"<username>","token":"<token>","responses":[["<password>"]]}"```
+"{"user":"<username>","token":"<token>","responses":[["<password>"]]}"
+```
 
 You should reply like this:
 ```json
