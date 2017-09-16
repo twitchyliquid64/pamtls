@@ -33,6 +33,7 @@ export GOPATH=`pwd` #set the GOPATH to the root directory of pamtls
 | Option name   | Explanation | Example |
 | ------------- | ----------- | --------|
 | debug         | When set, will print lots of helpful messages in the syslog.  | `debug=true` |
+| logger        | By default, log messages are printed to STDOUT. If logger is set to syslog, log messages are instead sent to the syslog.  | `logger=syslog` |
 | token         | This is a string which will be sent to the web endpoint for all requests on this machine. Useful for giving a machine a unique identifier. | `token=blah-blah` |
 | url           | Base URL which pamtls will make requests to, to ask if the user should be permitted. | `url=https://<mydomain>/auth` |
 | verify        | Sets the TLS verification mode. Defaults to full verification against System root certificates. Other values are 'pinned' and 'insecure'. Do not get lazy and use insecure, you might as well just not have a password then. | `verify=pinned` |
@@ -44,7 +45,7 @@ export GOPATH=`pwd` #set the GOPATH to the root directory of pamtls
 For example, a pamtls config line which makes requests to `https://example.com/pam/authenticate` and does normal TLS server validation is:
 
 ```
-auth required /boot/pamtls.so url=https://example.com/pam prompt=password token=computer-x
+auth required /boot/pamtls.so url=https://example.com/pam prompt=password token=computer-x logger=syslog
 ```
 
 ## Server setup
