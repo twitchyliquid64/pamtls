@@ -2,18 +2,21 @@
 
 pamtls allows you to hit a JSON endpoint and ask if the given username+password+other should be allowed or not.
 
-You can use this to move your password system for \*nix user accounts to a centralised system without LDAP/Kerberos, or check a webservice to deny access (remote lockout).
+You can use this to move your passwords for \*nix user accounts to a centralised system without LDAP/Kerberos, or check a webservice to deny access (remote lockout).
 
-Also supports client certs to allow full mutual authentication between the client and server.
+pamtls also supports client certs to allow full mutual authentication between the client and server.
 
 ## Build
 
-You need pam-dev (headers, -lpam) on your system.
+#### Install dependencies
+
+You need pam-dev (C headers and libpam) on your system.
 
 Debian, Ubuntu, Linux Mint: `sudo apt-get install libpam0g-dev`
+
 CentOS, Fedora, RHEL: `sudo yum install gcc pam-devel`
 
-Then:
+#### Run the build script
 
 ```shell
 export GOPATH=`pwd` #set the GOPATH to the root directory of pamtls
@@ -24,7 +27,7 @@ export GOPATH=`pwd` #set the GOPATH to the root directory of pamtls
 ## Install
 
 1. Copy `pamtls.so` to somewhere in your filesystem. It must be accessible whenever authorization is performed (someone tries to SSH, boots to a lock screen etc).
-2. Modify your `/etc/pam.d/common-auth` file to invoke your PAM module. If you don't know how to do this, I recommend some reading.
+2. Modify your `/etc/pam.d/common-auth` file to invoke your PAM module. If you don't know how to do this, I recommend some reading about PAM modules, the `/etc/pam.d` directory, and the layout of the PAM configuration files.
 3. Decide on your options and append them to the PAM module line. The options are as follows:
 
 | Option name   | Explanation | Example |
@@ -38,11 +41,17 @@ export GOPATH=`pwd` #set the GOPATH to the root directory of pamtls
 | key           | Only valid when `cert`is set as well. This is a path to the PEM-encoded client key to use for TLS connections. | `cert=/etc/client_key.pem` |
 | prompt        | When present and set to `password`, pamtls will not ask the server which questions the user should be asked, and instead just ask for the password. You probably want to set this, unless you are doing funky stuff and want to prompt the user for other credentials as well (such as an OTP/2-factor code). | `prompt=password` |
 
+For example, a pamtls config line which makes requests to `https://example.com/pam/authenticate` and does normal TLS server validation is:
+
+```
+auth required /boot/pamtls.so url=https://example.com/pam prompt=password token=computer-x
+```
+
 ## Server setup
 
-*NOTE: You should be very careful with your implementation here. Make sure you have rate limiting to stop someone bruteforcing, and you use the TLS-client certificates feature.*
+*NOTE: You need to be very careful with your implementation. Make sure you have rate limiting to stop someone bruteforcing, and you should use the TLS-client certificates feature to prevent any devices from talking to your server which are not meant to.*
 
-Basically, you need to implement a HTTPS endpoint which accepts HTTP POST requests containing JSON, and replies with JSON.
+**TL;DR** you need to implement a HTTPS endpoint which accepts HTTP POST requests containing JSON, and replies with JSON.
 
 #### Authentication endpoint
 
@@ -57,7 +66,7 @@ You should reply like this:
 {"Success": true}
 ```
 
-If you want to deny access, obviously `Success` should be false.
+If you want to deny access, `Success` should be false (obviously).
 
 If you encounter a system error and want to deny access but also log the failure, send this:
 
