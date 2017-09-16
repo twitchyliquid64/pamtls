@@ -1,4 +1,4 @@
-# pamgo
+# pamtls
 
 Basic PAM module that delegates all PAM invocations to a mutually-authenticated webservice.
 

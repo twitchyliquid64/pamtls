@@ -10,6 +10,8 @@ import (
 	"github.com/donpark/pam"
 )
 
+const logPrefix = "PAMTLS "
+
 var logger *log.Logger
 
 func coreInit(args pam.Args) {
@@ -17,11 +19,11 @@ func coreInit(args pam.Args) {
 		if strings.ToLower(loggerSpec) == "syslog" {
 			initSyslog()
 		} else {
-			logger = log.New(os.Stdout, "PAMGO ", 0)
+			logger = log.New(os.Stdout, logPrefix, 0)
 			logger.Printf("Unrecognised logger spec: %s", loggerSpec)
 		}
 	} else {
-		logger = log.New(os.Stdout, "PAMGO ", log.Ltime)
+		logger = log.New(os.Stdout, logPrefix, log.Ltime)
 	}
 }
 
@@ -29,7 +31,7 @@ func initSyslog() {
 	var err error
 	logger, err = syslog.NewLogger(syslog.LOG_INFO, log.Ltime)
 	if err != nil {
-		logger = log.New(os.Stderr, "PAMGO ", log.Ltime)
+		logger = log.New(os.Stderr, logPrefix, log.Ltime)
 		logger.Printf("syslog.Open() err: %v", err)
 	}
 }

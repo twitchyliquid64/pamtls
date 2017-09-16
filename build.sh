@@ -2,24 +2,24 @@
 
 function build
 {
-  go build -o pamgo.so -buildmode c-shared
+  go build -o pamtls.so -buildmode c-shared
 }
 
 function clean
 {
   go clean
-  rm -f pamgo.h pamgo.so
+  rm -f pamtls.h pamtls.so
 }
 
 function install_test
 {
   export wd=`pwd`
-  echo "auth required ${wd}/pamgo.so logger=syslog test" > /etc/pam.d/test_pamgo
+  echo "auth required ${wd}/pamtls.so logger=syslog test" > /etc/pam.d/test_pamtls
 }
 
 function uninstall_test
 {
-  rm -f /etc/pam.d/test_pamgo
+  rm -f /etc/pam.d/test_pamtls
 }
 
 case $1 in

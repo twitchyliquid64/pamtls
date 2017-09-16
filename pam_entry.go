@@ -17,6 +17,18 @@ func (mp *mypam) Authenticate(hdl pam.Handle, args pam.Args) pam.Value {
 		return pam.AuthError
 	}
 	info("authenticate", "Got request for user: ", usr)
+
+	resp, err := hdl.Conversation(pam.Message{
+		Style: pam.MessageEchoOff,
+		Msg:   "Password: ",
+	})
+	info("authenticate", "pw: ", resp[0], " err: ", err)
+
+	resp, err = hdl.Conversation(pam.Message{
+		Style: pam.MessageEchoOn,
+		Msg:   "2FA: ",
+	})
+	info("authenticate", "code: ", resp, " err: ", err)
 	return pam.Success
 }
 
